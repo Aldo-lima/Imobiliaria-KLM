@@ -11,7 +11,7 @@
           <tbody>
               @forelse ($municipios as $municipio)
                     <tr>
-                        <td>{{$municipio}}</td>
+                        <td>{{$municipio->nome}}</td>
                         <td>Excluir - Remover</td>
                     </tr>
               @empty
@@ -19,8 +19,16 @@
                         <td colspan="2"> Não existe cidades cadastradas.</td>
                    </tr>
               @endforelse
+
               @section('conteudo-Secudario')
-                     <p>conteudo  secundario</p>
+              <a href="{{ route('municipio.create')}}"><button type="button" class="btn btn-success">Cadastrar Nova Cidade</button></a>
+
+                 @if (session('sucesso'))
+                      <div>
+                          {{session('sucesso')}}
+                      </div>
+                 @endif
+
               @endsection
           </tbody>
       </table>

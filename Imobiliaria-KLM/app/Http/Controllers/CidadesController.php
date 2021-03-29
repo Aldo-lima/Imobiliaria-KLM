@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Municipio;
 use Illuminate\Http\Request;
+use App\Http\Requests\MunicipioReuest;
 
 class CidadesController extends Controller
 {
@@ -13,8 +14,8 @@ class CidadesController extends Controller
      */
     public function index()
     {
-        $municipios = ['Manaus', 'São paulo', 'recife', 'Aracajú'];
-         return view('Admin.sistema.index', ['municipios'=>$municipios]);
+        $municipios = Municipio::all();
+         return view('Admin.sistema.municipio', ['municipios'=>$municipios]);
     }
 
     /**
@@ -24,7 +25,8 @@ class CidadesController extends Controller
      */
     public function create()
     {
-        //
+        $action = route('municipio.store');
+        return view('Admin.sistema.formCidade', ['action'=>$action]);
     }
 
     /**
@@ -33,9 +35,11 @@ class CidadesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(MunicipioReuest $request)
     {
-        //
+        Municipio::create($request->all());
+        $request->session()->flash('sucesso', "Municipio $request->nome incluida com sucesso!");
+        return redirect()->route('municipio.index');
     }
 
     /**
@@ -46,7 +50,7 @@ class CidadesController extends Controller
      */
     public function show($id)
     {
-        //
+
     }
 
     /**
@@ -57,7 +61,9 @@ class CidadesController extends Controller
      */
     public function edit($id)
     {
-        //
+        $municipio = Municipio::find($id);
+        $action = route('municipio.update', $municipio->id);
+        return view('Admin.sistema.formCidade',['action'=>$action, 'municipio'=>$municipio]);
     }
 
     /**
@@ -67,9 +73,12 @@ class CidadesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(MunicipioReuest $request, $id)
     {
-        //
+        $municipio = Municipio::find($id);
+        $municipio->update($request->all());
+        $request->session()->flash('sucesso', "Municipio $request->nome alterada com sucesso!");
+        return redirect()->route('municipio.index');
     }
 
     /**
@@ -78,8 +87,11 @@ class CidadesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
-        //
+        Municipio::destroy($id);
+        $request->session()->flash('sucesso', "Municipio $request->nome deletado com sucesso!");
+        return redirect()->route('municipio.index');
+
     }
 }
