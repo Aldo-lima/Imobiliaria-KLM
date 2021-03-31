@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 Route::resource('municipio', 'CidadesController');
+Route::resource('imovel', 'ImovelController');
 #Route::get('/', function () {
   #  return view('welcome');
 #});

@@ -14,8 +14,9 @@ class CidadesController extends Controller
      */
     public function index()
     {
-        $municipios = Municipio::all();
-         return view('Admin.sistema.municipio', ['municipios'=>$municipios]);
+        $municipios = Municipio::orderBy('nome', 'asc')->get();
+    #   $municipios = Municipio::all();
+        return view('Admin.sistema.municipio', ['municipios'=>$municipios]);
     }
 
     /**

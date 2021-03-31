@@ -6,7 +6,22 @@ use Illuminate\Database\Eloquent\Model;
 
 class Imovel extends Model
 {
-protected $tabe = "imoveis";
+protected $table = "imoveis";
+
+protected $fillable = [
+    'titulo',
+    'terreno',
+    'salas',
+    'banheiro',
+    'dormitorio',
+    'garagems',
+    'descricao',
+    'preco',
+    'municipio_id',
+    'tipo_id',
+    'finalidade_id'
+
+];
 
     public function endereco(){
      return $this->hasOne(Endereco::class);
