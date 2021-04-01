@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ImovelReuest;
 use App\Models\Finalidade;
 use App\Models\Imovel;
 use App\Models\Municipio;
@@ -45,7 +46,7 @@ class ImovelController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ImovelReuest $request)
     {
        DB::beginTransaction();
        $imovel = Imovel::create($request->all());
@@ -79,7 +80,13 @@ class ImovelController extends Controller
      */
     public function edit($id)
     {
-        //
+        $imovel = Imovel::with(['municipio','finalidade', 'tipo', 'proximidade', 'endereco'])->find($id);
+        $tipos = Tipo::all();
+        $municipios = Municipio::all();
+        $finalidades = Finalidade::all();
+        $proximidades = Proximidade::all();
+        $action = route('imovel.update', $imovel->id);
+        return view('Admin.sistema.formImovel', [ 'imovel'=>$imovel, 'action'=>$action, 'municipios'=>$municipios, 'tipos'=>$tipos, 'finalidades'=>$finalidades, 'proximidades'=>$proximidades]);
     }
 
     /**
@@ -89,9 +96,19 @@ class ImovelController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ImovelReuest $request, $id)
     {
-        //
+        DB::beginTransaction();
+        $imovel = Imovel::find($id);
+        $imovel->update($request->all());
+        $imovel->endereco->update($request->all());
+
+        if($request->has('proximidade')){
+            $imovel->proximidade()->sync($request->proximidade);
+        }
+        DB::commit();
+        $request->session()->flash('sucesso', " Imovel atualizado com  sucesso!");
+        return redirect()->route('imovel.index');
     }
 
     /**
@@ -100,8 +117,15 @@ class ImovelController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
-    }
+         $imovel = Imovel::find($id);
+
+         DB::beginTransaction();
+         $imovel->endereco->delete();
+         $imovel->delete();
+         DB::commit();
+         $request->session()->flash('sucesso', " I movel excluido sucesso!");
+         return redirect()->route('imovel.index');
+        }
 }
