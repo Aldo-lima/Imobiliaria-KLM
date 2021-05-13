@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 */
 Route::resource('municipio', 'CidadesController');
 Route::resource('imovel', 'ImovelController');
-#Route::get('/', function () {
-  #  return view('welcome');
-#});
+Route::get('index','SiteController@index');
+Route::get('imovel-busca','SiteController@index');
+Route::get('/', function () {
+    return view('Admin.sistema.index');
+});
